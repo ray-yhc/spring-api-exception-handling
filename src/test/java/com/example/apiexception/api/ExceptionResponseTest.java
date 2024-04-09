@@ -105,5 +105,4 @@ class ExceptionResponseTest {
                 .andExpect(jsonPath("$.path").value("/api/exception/runTimeException"));
     }
 
-    // commit msg: "test: Add test for exception handling"
 }
