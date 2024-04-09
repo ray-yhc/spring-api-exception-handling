@@ -4,6 +4,7 @@ import com.example.apiexception.constant.ResponseCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,17 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     ///////////////////////////////////////////////
+    /**
+     * 400 Bad Request <br>
+     * Path variable or Parameter type mismatch
+     */
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ResponseCode responseCode = ResponseCode.TYPE_MISMATCH;
+        Object[] args = new Object[]{ex.getPropertyName(), ex.getValue()};
+        String message = "값을 읽어오는 데 실패했습니다: '" + args[0] + "' with value: '" + args[1] + "'";
+        return handleExceptionInternal(ex, message, responseCode.getHttpStatus(), request);
+    }
     /**
      * 404 Not Found <br>
      * No handler found
