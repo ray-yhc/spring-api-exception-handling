@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -26,9 +28,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(e, e.getHttpStatus(), request);
     }
 
-    ///////////////////////////////////////////////
-    // todo: 이 곳에 예외처리 코드를 작성해주세요 ///////
-
+    /**
+     * 400 Bad Request <br>
+     * JSON parse error
+     */
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ResponseCode responseCode = ResponseCode.JSON_PARSE_ERROR;
+        return handleExceptionInternal(ex, ex.getMessage(), responseCode.getHttpStatus(), request);
+    }
 
 
     ///////////////////////////////////////////////
