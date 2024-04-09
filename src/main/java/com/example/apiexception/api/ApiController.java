@@ -1,5 +1,6 @@
 package com.example.apiexception.api;
 
+import com.example.apiexception.api.dto.RequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,13 @@ public class ApiController {
             @PathVariable Integer pathNumber
     ) {
         return ResponseEntity.ok().body("Your path number is " + pathNumber);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> postBody(
+            @RequestBody RequestDto body
+    ) {
+        return ResponseEntity.ok().body("Your number is " + body.getNumber() + " and name is " + body.getName());
     }
 
     @GetMapping("/exception/illigalArgumentException")

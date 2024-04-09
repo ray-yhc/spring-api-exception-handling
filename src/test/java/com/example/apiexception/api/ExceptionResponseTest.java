@@ -20,7 +20,7 @@ class ExceptionResponseTest {
     MockMvc mockMvc;
 
     @Test
-    @DisplayName("200 ok: 정상인 요청 테스트")
+    @DisplayName("200 ok: 정상 요청에 대해 응답이 정상적으로 이루어진다.")
     void http_ok() throws Exception {
         // given
         int number = 1;
@@ -41,4 +41,23 @@ class ExceptionResponseTest {
                 .andExpect(jsonPath("$.message").value("존재하지 않는 api입니다."))
                 .andExpect(jsonPath("$.path").value("/wrong/url"));
     }
+
+    @Test
+    @DisplayName("400 bad request: json parsing error가 발생할 때 400 응답이 이루어진다.")
+    void http_400_wrong_json_format() throws Exception {
+        // given
+        ObjectMapper mapper = new ObjectMapper();
+        String wrongJson = mapper.writeValueAsString(new RequestDto(1, "testname"));
+        wrongJson = "{" + wrongJson; // 잘못된 json 형식
+
+        // when & then
+        mockMvc.perform(post("/api")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(wrongJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.path").value("/api"));
+    }
+
 }
