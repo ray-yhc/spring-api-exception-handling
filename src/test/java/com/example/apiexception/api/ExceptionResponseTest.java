@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,6 +54,16 @@ class ExceptionResponseTest {
         mockMvc.perform(post("/api")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(wrongJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.path").value("/api"));
+    }
+
+    @Test
+    @DisplayName("400 bad request: required parameter가 누락되었을 때 400 응답이 이루어진다.")
+    void http_400_missing_required_parameter() throws Exception {
+        mockMvc.perform(get("/api"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.error").value("Bad Request"))
