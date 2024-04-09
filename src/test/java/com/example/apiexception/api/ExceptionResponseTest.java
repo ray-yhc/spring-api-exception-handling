@@ -70,4 +70,20 @@ class ExceptionResponseTest {
                 .andExpect(jsonPath("$.path").value("/api"));
     }
 
+    @Test
+    @DisplayName("400 bad request: parameter type mismatch가 발생할 때 400 응답이 이루어진다.")
+    void http_400_parameter_type_mismatch() throws Exception {
+        // given
+        String wrongNumber = "string";
+
+        // when & then
+        mockMvc.perform(get("/api")
+                        .param("number", wrongNumber))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.path").value("/api"));
+    }
+
+
 }
