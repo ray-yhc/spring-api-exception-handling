@@ -39,8 +39,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, ex.getMessage(), responseCode.getHttpStatus(), request);
     }
 
-
-    ///////////////////////////////////////////////
     /**
      * 400 Bad Request <br>
      * Path variable or Parameter type mismatch
@@ -52,6 +50,16 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         String message = "값을 읽어오는 데 실패했습니다: '" + args[0] + "' with value: '" + args[1] + "'";
         return handleExceptionInternal(ex, message, responseCode.getHttpStatus(), request);
     }
+
+    /**
+     * 400 Bad Request <br>
+     * Missing required parameter
+     */
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return handleExceptionInternal(ex, ResponseCode.MISSING_PARAMETER, request);
+    }
+
     /**
      * 404 Not Found <br>
      * No handler found
