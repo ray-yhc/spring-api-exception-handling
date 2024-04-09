@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
@@ -67,6 +68,28 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         return handleExceptionInternal(ex, ResponseCode.NOT_FOUND, request);
+    }
+
+    /**
+     * 500 Internal Server Error <br>
+     * Handle all exceptions
+     */
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleAll(Exception e, WebRequest request) {
+        log.error("Exception: ", e);
+        return handleExceptionInternal(e, ResponseCode.INTERNAL_SERVER_ERROR, request);
+    }
+
+    /**
+     * 400 Bad Request <br>
+     * Handle IllegalArgumentException
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e, WebRequest request) {
+        log.error("IllegalArgumentException: ", e);
+        return handleExceptionInternal(e, ResponseCode.BAD_REQUEST, request);
     }
 
     private ResponseEntity<Object> handleExceptionInternal(Exception e, ResponseCode responseCode, WebRequest request) {
