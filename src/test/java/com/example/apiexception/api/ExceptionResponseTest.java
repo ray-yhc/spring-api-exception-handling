@@ -85,5 +85,25 @@ class ExceptionResponseTest {
                 .andExpect(jsonPath("$.path").value("/api"));
     }
 
+    @Test
+    @DisplayName("400 bad request: IllegalArgumentException이 발생할 때 400 응답이 이루어진다.")
+    void http_400_illegal_argument_exception() throws Exception {
+        mockMvc.perform(get("/api/exception/illigalArgumentException"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.path").value("/api/exception/illigalArgumentException"));
+    }
 
+    @Test
+    @DisplayName("500 internal server error: RuntimeException이 발생할 때 500 응답이 이루어진다.")
+    void http_500_runtime_exception() throws Exception {
+        mockMvc.perform(get("/api/exception/runTimeException"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.code").value(500))
+                .andExpect(jsonPath("$.error").value("Internal Server Error"))
+                .andExpect(jsonPath("$.path").value("/api/exception/runTimeException"));
+    }
+
+    // commit msg: "test: Add test for exception handling"
 }
